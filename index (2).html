@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spider Scripts - Hub de Scripts & Executores</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo" onclick="showPage('home')">
+                <i class="fas fa-spider"></i>
+                <span>spiderscripts</span>.com
+            </a>
+            <div class="nav-links">
+                <a href="#" class="nav-link active" onclick="showPage('home')">Início</a>
+                <a href="#" class="nav-link" onclick="showPage('scripts')">Scripts</a>
+                <a href="#" class="nav-link" onclick="showPage('executors')">Executores</a>
+                <a href="#" class="nav-link" onclick="showPage('top-rated')">Top Rated</a>
+            </div>
+            <div class="nav-actions">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="globalSearch" placeholder="Buscar..." onkeyup="globalSearch(this.value)">
+                </div>
+                <button class="btn-publish" id="publishBtn" onclick="openPublishModal()">
+                    <i class="fas fa-plus"></i> Publicar
+                </button>
+                <button class="btn-login" id="loginBtn" onclick="openAuthModal()">
+                    <i class="fas fa-user"></i> Entrar
+                </button>
+                <div class="user-menu" id="userMenu" style="display:none">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user" alt="Avatar" class="user-avatar">
+                    <span id="userName">User</span>
+                    <button onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
+                </div>
+            </div>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#" onclick="showPage('home'); toggleMobileMenu()">Início</a>
+        <a href="#" onclick="showPage('scripts'); toggleMobileMenu()">Scripts</a>
+        <a href="#" onclick="showPage('executors'); toggleMobileMenu()">Executores</a>
+        <a href="#" onclick="showPage('top-rated'); toggleMobileMenu()">Top Rated</a>
+    </div>
+
+    <!-- Main Content -->
+    <main id="mainContent">
+        <!-- HOME PAGE -->
+        <section id="homePage" class="page active">
+            <div class="hero">
+                <div class="hero-content">
+                    <h1><i class="fas fa-spider"></i> spiderscripts<span>.com</span></h1>
+                    <p class="hero-subtitle">O maior hub de <em>scripts e executores</em> da comunidade gamer</p>
+                    <p class="hero-desc">Compartilhe, avalie e descubra os melhores scripts para seus jogos favoritos.</p>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <span class="stat-number" id="totalScripts">0</span>
+                            <span class="stat-label">Scripts</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="totalExecutors">0</span>
+                            <span class="stat-label">Executores</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="totalUsers">0</span>
+                            <span class="stat-label">Jogadores</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="totalDownloads">0</span>
+                            <span class="stat-label">Downloads</span>
+                        </div>
+                    </div>
+                    <div class="hero-actions">
+                        <button class="btn-primary" onclick="showPage('scripts')">
+                            <i class="fas fa-rocket"></i> Explorar Scripts
+                        </button>
+                        <button class="btn-secondary" onclick="showPage('executors')">
+                            <i class="fas fa-download"></i> Baixar Executores
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section featured-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-fire"></i> Em Destaque</h2>
+                    <a href="#" class="view-all" onclick="showPage('top-rated')">Ver todos <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="cards-grid" id="featuredGrid"></div>
+            </div>
+
+            <div class="section recent-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-clock"></i> Adicionados Recentemente</h2>
+                    <a href="#" class="view-all" onclick="showPage('scripts')">Ver todos <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="cards-grid" id="recentGrid"></div>
+            </div>
+        </section>
+
+        <!-- SCRIPTS PAGE -->
+        <section id="scriptsPage" class="page">
+            <div class="page-header">
+                <h1><i class="fas fa-scroll"></i> Scripts</h1>
+                <p>Scripts criados e compartilhados pela comunidade</p>
+            </div>
+            <div class="filters-bar">
+                <div class="filter-group">
+                    <button class="filter-btn active" data-filter="all" onclick="filterItems('scripts', 'all')">Todos</button>
+                    <button class="filter-btn" data-filter="roblox" onclick="filterItems('scripts', 'roblox')">Roblox</button>
+                    <button class="filter-btn" data-filter="minecraft" onclick="filterItems('scripts', 'minecraft')">Minecraft</button>
+                    <button class="filter-btn" data-filter="gta" onclick="filterItems('scripts', 'gta')">GTA</button>
+                    <button class="filter-btn" data-filter="cs2" onclick="filterItems('scripts', 'cs2')">CS2</button>
+                    <button class="filter-btn" data-filter="valorant" onclick="filterItems('scripts', 'valorant')">Valorant</button>
+                    <button class="filter-btn" data-filter="other" onclick="filterItems('scripts', 'other')">Outros</button>
+                </div>
+                <div class="sort-group">
+                    <select id="scriptsSort" onchange="sortItems('scripts', this.value)">
+                        <option value="newest">Mais Recentes</option>
+                        <option value="popular">Mais Populares</option>
+                        <option value="rated">Melhor Avaliados</option>
+                        <option value="downloads">Mais Downloads</option>
+                    </select>
+                </div>
+            </div>
+            <div class="cards-grid" id="scriptsGrid"></div>
+        </section>
+
+        <!-- EXECUTORS PAGE -->
+        <section id="executorsPage" class="page">
+            <div class="page-header">
+                <h1><i class="fas fa-terminal"></i> Executores</h1>
+                <p>Ferramentas para executar scripts no seu jogo favorito</p>
+            </div>
+            <div class="filters-bar">
+                <div class="filter-group">
+                    <button class="filter-btn active" data-filter="all" onclick="filterItems('executors', 'all')">Todos</button>
+                    <button class="filter-btn" data-filter="roblox" onclick="filterItems('executors', 'roblox')">Roblox</button>
+                    <button class="filter-btn" data-filter="minecraft" onclick="filterItems('executors', 'minecraft')">Minecraft</button>
+                    <button class="filter-btn" data-filter="gta" onclick="filterItems('executors', 'gta')">GTA</button>
+                    <button class="filter-btn" data-filter="cs2" onclick="filterItems('executors', 'cs2')">CS2</button>
+                    <button class="filter-btn" data-filter="valorant" onclick="filterItems('executors', 'valorant')">Valorant</button>
+                    <button class="filter-btn" data-filter="other" onclick="filterItems('executors', 'other')">Outros</button>
+                </div>
+                <div class="sort-group">
+                    <select id="executorsSort" onchange="sortItems('executors', this.value)">
+                        <option value="newest">Mais Recentes</option>
+                        <option value="popular">Mais Populares</option>
+                        <option value="rated">Melhor Avaliados</option>
+                        <option value="downloads">Mais Downloads</option>
+                    </select>
+                </div>
+            </div>
+            <div class="cards-grid" id="executorsGrid"></div>
+        </section>
+
+        <!-- TOP RATED PAGE -->
+        <section id="topRatedPage" class="page">
+            <div class="page-header">
+                <h1><i class="fas fa-trophy"></i> Top Rated</h1>
+                <p>Os scripts e executores mais bem avaliados pela comunidade</p>
+            </div>
+            <div class="top-tabs">
+                <button class="top-tab active" onclick="showTopTab('scripts')">Top Scripts</button>
+                <button class="top-tab" onclick="showTopTab('executors')">Top Executores</button>
+            </div>
+            <div class="top-list" id="topList"></div>
+        </section>
+    </main>
+
+    <!-- Publish Modal -->
+    <div class="modal" id="publishModal">
+        <div class="modal-overlay" onclick="closePublishModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-plus-circle"></i> Publicar</h2>
+                <button class="modal-close" onclick="closePublishModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="publish-tabs">
+                <button class="publish-tab active" onclick="switchPublishTab('script')">Script</button>
+                <button class="publish-tab" onclick="switchPublishTab('executor')">Executor</button>
+            </div>
+            <form id="publishForm" onsubmit="handlePublish(event)">
+                <div class="form-group">
+                    <label>Título *</label>
+                    <input type="text" id="pubTitle" required placeholder="Nome do script/executor">
+                </div>
+                <div class="form-group">
+                    <label>Jogo *</label>
+                    <select id="pubGame" required>
+                        <option value="">Selecione o jogo</option>
+                        <option value="roblox">Roblox</option>
+                        <option value="minecraft">Minecraft</option>
+                        <option value="gta">GTA V / GTA Online</option>
+                        <option value="cs2">Counter-Strike 2</option>
+                        <option value="valorant">Valorant</option>
+                        <option value="other">Outro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Descrição *</label>
+                    <textarea id="pubDesc" required rows="3" placeholder="Descreva o que seu script/executor faz..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>URL de Download *</label>
+                    <input type="url" id="pubUrl" required placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label>URL da Imagem (opcional)</label>
+                    <input type="url" id="pubImage" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label>Versão</label>
+                    <input type="text" id="pubVersion" placeholder="Ex: 1.0.0">
+                </div>
+                <input type="hidden" id="pubType" value="script">
+                <button type="submit" class="btn-primary btn-full">
+                    <i class="fas fa-upload"></i> Publicar
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div class="modal" id="authModal">
+        <div class="modal-overlay" onclick="closeAuthModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="authTitle"><i class="fas fa-user-circle"></i> Entrar</h2>
+                <button class="modal-close" onclick="closeAuthModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Usuário</label>
+                    <div class="input-icon">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="loginUser" required placeholder="Seu usuário">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Senha</label>
+                    <div class="input-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="loginPass" required placeholder="Sua senha">
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary btn-full">
+                    <i class="fas fa-sign-in-alt"></i> Entrar
+                </button>
+                <div class="auth-switch" id="loginSwitch">
+                    <span>Não tem conta?</span>
+                    <a href="#" onclick="switchAuthTab('register'); return false;">Criar conta</a>
+                </div>
+            </form>
+            <form id="registerForm" style="display:none" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label>Usuário *</label>
+                    <div class="input-icon">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="regUser" required placeholder="Escolha um usuário">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Email *</label>
+                    <div class="input-icon">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="regEmail" required placeholder="seu@email.com">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Senha *</label>
+                    <div class="input-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="regPass" required placeholder="Mínimo 6 caracteres">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Confirmar Senha *</label>
+                    <div class="input-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="regPass2" required placeholder="Repita a senha">
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary btn-full">
+                    <i class="fas fa-user-plus"></i> Criar Conta
+                </button>
+                <div class="auth-switch" id="registerSwitch">
+                    <span>Já tem conta?</span>
+                    <a href="#" onclick="switchAuthTab('login'); return false;">Entrar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div class="modal" id="detailModal">
+        <div class="modal-overlay" onclick="closeDetailModal()"></div>
+        <div class="modal-content modal-large">
+            <button class="modal-close" onclick="closeDetailModal()"><i class="fas fa-times"></i></button>
+            <div id="detailContent"></div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMsg">Mensagem</span>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="#" class="logo" onclick="showPage('home')">
+                    <i class="fas fa-spider"></i>
+                    <span>spiderscripts</span>.com
+                </a>
+                <p>Comunidade gamer de scripts e executores. Compartilhe, avalie e descubra.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Links</h4>
+                <a href="#" onclick="showPage('scripts')">Scripts</a>
+                <a href="#" onclick="showPage('executors')">Executores</a>
+                <a href="#" onclick="showPage('top-rated')">Top Rated</a>
+            </div>
+            <div class="footer-links">
+                <h4>Comunidade</h4>
+                <a href="#"><i class="fab fa-discord"></i> Discord</a>
+                <a href="#"><i class="fab fa-github"></i> GitHub</a>
+                <a href="#"><i class="fab fa-twitter"></i> Twitter</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>spiderscripts.com. Feito pela comunidade, para a comunidade.</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
